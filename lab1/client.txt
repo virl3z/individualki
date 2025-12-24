@@ -7,7 +7,7 @@ using namespace std;
 int main() {
     setlocale(LC_ALL, "rus");
 
-    const string reqFile = "C:/Users/s0177102/source/repos/file/REQUEST.txt";
+    const string reqFile = "C:/Users/s0195784/source/repos/file/REQUEST.txt";
 
     while (true) {
         string surname;
@@ -54,4 +54,5 @@ int main() {
     }
 
     return 0;
+
 }
