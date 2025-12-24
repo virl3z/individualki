@@ -1,0 +1,212 @@
+import java.util.Scanner;
+
+// Интерфейс Number
+interface Number {
+    Number add(Number x);
+    Number sub(Number x);
+    Number mul(Number x);
+    Number div(Number x);
+    void print();
+}
+
+// Класс IntegerNumber (целое число)
+class IntegerNumber implements Number {
+    private int value;      // целочисленное значение
+
+    IntegerNumber(int value) {
+        this.value = value;
+    }
+
+    int getValue() {
+        return value;
+    }
+
+    public Number add(Number x) {
+        IntegerNumber n = (IntegerNumber) x;
+        return new IntegerNumber(this.value + n.getValue());
+    }
+
+    public Number sub(Number x) {
+        IntegerNumber n = (IntegerNumber) x;
+        return new IntegerNumber(this.value - n.getValue());
+    }
+
+    public Number mul(Number x) {
+        IntegerNumber n = (IntegerNumber) x;
+        return new IntegerNumber(this.value * n.getValue());
+    }
+
+    public Number div(Number x) {
+        IntegerNumber n = (IntegerNumber) x;
+        if (n.getValue() == 0) {
+            System.out.println("Ошибка: деление на ноль!");
+            return new IntegerNumber(0);
+        }
+        return new IntegerNumber(this.value / n.getValue());
+    }
+
+    public void print() {
+        System.out.println("Integer: " + value);
+    }
+}
+
+// Класс RealNumber (вещественное число)
+class RealNumber implements Number {
+    private double value;      // вещественное значение
+
+    RealNumber(double value) {
+        this.value = value;
+    }
+
+    double getValue() {
+        return value;
+    }
+
+    public Number add(Number x) {
+        RealNumber n = (RealNumber) x;
+        return new RealNumber(this.value + n.getValue());
+    }
+
+    public Number sub(Number x) {
+        RealNumber n = (RealNumber) x;
+        return new RealNumber(this.value - n.getValue());
+    }
+
+    public Number mul(Number x) {
+        RealNumber n = (RealNumber) x;
+        return new RealNumber(this.value * n.getValue());
+    }
+
+    public Number div(Number x) {
+        RealNumber n = (RealNumber) x;
+        if (Math.abs(n.getValue()) < 1e-10) {
+            System.out.println("Ошибка: деление на ноль!");
+            return new RealNumber(0);
+        }
+        return new RealNumber(this.value / n.getValue());
+    }
+
+    public void print() {
+        System.out.println("Real: " + value);
+    }
+}
+
+// Главный класс
+public class InterfaceNumber {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        Number[] arr;
+
+        System.out.print("Введите количество элементов: ");
+        int k = sc.nextInt();
+        arr = new Number[k];
+
+        // Ввод элементов
+        for (int i = 0; i < k; i++) {
+            System.out.println("Выберите тип числа: 1 - Integer (целое), 2 - Real (вещественное)");
+            int type = sc.nextInt();
+
+            if (type == 1) {
+                System.out.print("Введите целое число: ");
+                int val = sc.nextInt();
+                arr[i] = new IntegerNumber(val);
+            } else if (type == 2) {
+                System.out.print("Введите вещественное число: ");
+                double val = sc.nextDouble();
+                arr[i] = new RealNumber(val);
+            } else {
+                System.out.println("Неверный выбор, создано целое число 0");
+                arr[i] = new IntegerNumber(0);
+            }
+        }
+
+        System.out.println("\nВывод всех элементов:");
+        for (int i = 0; i < k; i++) {
+            arr[i].print();
+        }
+
+        // Демонстрация арифметических операций
+        if (k >= 2) {
+            System.out.println("\n--- Демонстрация арифметических операций ---");
+            
+            // Проверяем типы чисел
+            Number first = arr[0];
+            Number second = arr[1];
+            
+            System.out.println("\nПервое число:");
+            first.print();
+            System.out.println("Второе число:");
+            second.print();
+            
+            System.out.println("\nРезультаты операций:");
+            
+            // Сложение
+            System.out.print("Сложение: ");
+            try {
+                Number sum = first.add(second);
+                sum.print();
+            } catch (Exception e) {
+                System.out.println("Ошибка при сложении: разные типы чисел");
+            }
+            
+            // Вычитание
+            System.out.print("Вычитание: ");
+            try {
+                Number diff = first.sub(second);
+                diff.print();
+            } catch (Exception e) {
+                System.out.println("Ошибка при вычитании: разные типы чисел");
+            }
+            
+            // Умножение
+            System.out.print("Умножение: ");
+            try {
+                Number prod = first.mul(second);
+                prod.print();
+            } catch (Exception e) {
+                System.out.println("Ошибка при умножении: разные типы чисел");
+            }
+            
+            // Деление
+            System.out.print("Деление: ");
+            try {
+                Number quot = first.div(second);
+                quot.print();
+            } catch (Exception e) {
+                System.out.println("Ошибка при делении: разные типы чисел");
+            }
+        } else {
+            System.out.println("\nНедостаточно элементов для демонстрации операций (нужно минимум 2)");
+        }
+
+        // Дополнительная демонстрация с одинаковыми типами
+        System.out.println("\n--- Демонстрация с одинаковыми типами ---");
+        
+        Number int1 = new IntegerNumber(10);
+        Number int2 = new IntegerNumber(3);
+        
+        System.out.println("\nЦелые числа:");
+        int1.print();
+        int2.print();
+        
+        System.out.println("\nОперации с целыми числами:");
+        int1.add(int2).print();
+        int1.sub(int2).print();
+        int1.mul(int2).print();
+        int1.div(int2).print();
+        
+        Number real1 = new RealNumber(7.5);
+        Number real2 = new RealNumber(2.5);
+        
+        System.out.println("\nВещественные числа:");
+        real1.print();
+        real2.print();
+        
+        System.out.println("\nОперации с вещественными числами:");
+        real1.add(real2).print();
+        real1.sub(real2).print();
+        real1.mul(real2).print();
+        real1.div(real2).print();
+    }
+}
