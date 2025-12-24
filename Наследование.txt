@@ -1,6 +1,6 @@
-import java.util.Scanner;
+// Файл: Quadrilateral.java
+// Начинается класс Quadrilateral - должен быть в отдельном файле
 
-// Базовый класс Четырехугольник
 class Quadrilateral {
     private double side1;  // сторона 1
     private double side2;  // сторона 2
@@ -66,8 +66,9 @@ class Quadrilateral {
                 "\nПлощадь: " + String.format("%.2f", area());
     }
 }
+// Файл: Rectangle.java
+// Начинается класс Rectangle - должен быть в отдельном файле
 
-// Производный класс Прямоугольник
 class Rectangle extends Quadrilateral {
     Rectangle(double length, double width) {
         super(length, width, length, width, 90.0); // углы 90°, противоположные стороны равны
@@ -109,8 +110,9 @@ class Rectangle extends Quadrilateral {
                 "\nПлощадь: " + String.format("%.2f", area());
     }
 }
+// Файл: Square.java
+// Начинается класс Square - должен быть в отдельном файле
 
-// Производный класс Квадрат
 class Square extends Rectangle {
     Square(double side) {
         super(side, side); // у квадрата длина = ширина
@@ -145,8 +147,11 @@ class Square extends Rectangle {
                 "\nПлощадь: " + String.format("%.2f", area());
     }
 }
+// Файл: ExtendsQuadrilateral.java
+// Главный класс с методом main - должен быть в отдельном файле
 
-// Главный класс
+import java.util.Scanner;
+
 public class ExtendsQuadrilateral {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
