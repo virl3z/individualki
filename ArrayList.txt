@@ -1,0 +1,177 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
+class Book {
+    private String title;     // название книги
+    private String author;    // автор
+    private int year;         // год издания
+    private String genre;     // жанр
+
+    Book(String title, String author, int year, String genre) {
+        this.title = title;
+        this.author = author;
+        this.year = year;
+        this.genre = genre;
+    }
+
+    String getTitle() {
+        return title;
+    }
+
+    String getAuthor() {
+        return author;
+    }
+
+    int getYear() {
+        return year;
+    }
+
+    String getGenre() {
+        return genre;
+    }
+
+    public String toString() {
+        return "Книга: " + title +
+                "\nАвтор: " + author +
+                "\nГод: " + year +
+                "\nЖанр: " + genre + "\n";
+    }
+}
+
+class HomeLibrary {
+    ArrayList<Book> a;
+
+    HomeLibrary() {
+        a = new ArrayList<Book>();
+    }
+
+    void add(Book b) {
+        a.add(b);
+    }
+
+    void del(String title) {
+        int pos = -1;
+        for (int i = 0; i < a.size(); i++) {
+            if (title.equalsIgnoreCase(a.get(i).getTitle()))
+                pos = i;
+        }
+        if (pos > -1) {
+            a.remove(pos);
+            System.out.println("Книга удалена: " + title);
+        } else
+            System.out.println("Такой книги нет");
+    }
+
+    void findByTitle(String title) {
+        boolean found = false;
+        for (Book b : a) {
+            if (title.equalsIgnoreCase(b.getTitle())) {
+                System.out.println(b);
+                found = true;
+            }
+        }
+        if (!found)
+            System.out.println("Книга с таким названием не найдена");
+    }
+
+    void findByAuthor(String author) {
+        boolean found = false;
+        for (Book b : a) {
+            if (author.equalsIgnoreCase(b.getAuthor())) {
+                System.out.println(b);
+                found = true;
+            }
+        }
+        if (!found)
+            System.out.println("Книги данного автора не найдены");
+    }
+
+    void sortByTitle() {
+        Collections.sort(a, new Comparator<Book>() {
+            public int compare(Book o1, Book o2) {
+                return o1.getTitle().compareToIgnoreCase(o2.getTitle());
+            }
+        });
+    }
+
+    void sortByAuthor() {
+        Collections.sort(a, new Comparator<Book>() {
+            public int compare(Book o1, Book o2) {
+                return o1.getAuthor().compareToIgnoreCase(o2.getAuthor());
+            }
+        });
+    }
+
+    void sortByYear() {
+        Collections.sort(a, new Comparator<Book>() {
+            public int compare(Book o1, Book o2) {
+                return o1.getYear() - o2.getYear();
+            }
+        });
+    }
+
+    void print() {
+        for (int i = 0; i < a.size(); i++)
+            System.out.println(a.get(i).toString());
+    }
+}
+
+import java.util.Scanner;
+
+public class LibraryProject {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        Scanner scL = new Scanner(System.in);
+
+        HomeLibrary lib = new HomeLibrary();
+
+        System.out.println("Введите количество книг");
+        int n = sc.nextInt();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println("Введите название книги");
+            String title = scL.nextLine();
+
+            System.out.println("Введите автора");
+            String author = scL.nextLine();
+
+            System.out.println("Введите год издания");
+            int year = sc.nextInt();
+
+            System.out.println("Введите жанр");
+            String genre = scL.nextLine();
+
+            Book b = new Book(title, author, year, genre);
+            lib.add(b);
+        }
+
+        System.out.println("\nСписок книг в библиотеке:");
+        lib.print();
+
+        System.out.println("Введите автора для поиска");
+        String author = scL.nextLine();
+        lib.findByAuthor(author);
+
+        System.out.println("Введите название книги для поиска");
+        String title = scL.nextLine();
+        lib.findByTitle(title);
+
+        System.out.println("Введите название книги для удаления");
+        String delTitle = scL.nextLine();
+        lib.del(delTitle);
+
+        System.out.println("\nСортировка по названию:");
+        lib.sortByTitle();
+        lib.print();
+
+        System.out.println("\nСортировка по автору:");
+        lib.sortByAuthor();
+        lib.print();
+
+        System.out.println("\nСортировка по году издания:");
+        lib.sortByYear();
+        lib.print();
+    }
+}
