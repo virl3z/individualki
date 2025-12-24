@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+// Файл: Book.java
+// Начинается новый класс Book - должен быть в отдельном файле
 
 class Book {
     private String title;     // название книги
@@ -38,6 +37,12 @@ class Book {
                 "\nЖанр: " + genre + "\n";
     }
 }
+// Файл: HomeLibrary.java
+// Начинается новый класс HomeLibrary - должен быть в отдельном файле
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 class HomeLibrary {
     ArrayList<Book> a;
@@ -116,6 +121,8 @@ class HomeLibrary {
             System.out.println(a.get(i).toString());
     }
 }
+// Файл: LibraryProject.java
+// Главный класс с методом main - должен быть в отдельном файле
 
 import java.util.Scanner;
 
