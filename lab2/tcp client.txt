@@ -1,0 +1,94 @@
+cpp
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#pragma warning(disable: 4996)
+
+#include <iostream>
+#include <winsock2.h>
+#include <string>
+
+using namespace std;
+
+#pragma comment(lib, "ws2_32.lib")
+
+struct Patient {
+    int id;
+    char name[50];
+    int age;
+    char diagnosis[100];
+    double temperature;
+};
+
+void printPatient(const Patient& p) {
+    cout << "Ваш медицинский статус:" << endl;
+    cout << "Пациент #" << p.id << endl;
+    cout << "Имя: " << p.name << endl;
+    cout << "Возраст: " << p.age << endl;
+    cout << "Диагноз: " << p.diagnosis << endl;
+    cout << "Температура: " << p.temperature << endl;
+    cout << "=============================" << endl;
+}
+
+int main() {
+    WSADATA wsaData;
+    SOCKET clientSocket;
+    sockaddr_in serverAddr;
+
+    WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+    // Создание TCP-сокета
+    clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+// Настройка адреса сервера
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); // Заменить на IP сервера в сети
+    serverAddr.sin_port = htons(8888);
+
+    // Подключение к серверу
+    if (connect(clientSocket, (sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
+        cout << "Не удалось подключиться к медсерверу!" << endl;
+        return 1;
+    }
+
+    cout << "Подключение к медсерверу установлено!" << endl;
+    cout << "Введите данные пациента (для выхода введите 'exit' в имени)" << endl;
+
+    int patientId = 1;
+    string input;
+    
+    while (true) {
+        Patient patient;
+        patient.id = patientId++;
+        
+        cout << "\nВведите имя пациента: ";
+        getline(cin, input);
+        if (input == "exit") {
+            patient.id = -1; // Сигнал завершения
+            send(clientSocket, (char*)&patient, sizeof(patient), 0);
+            break;
+        }
+        strcpy(patient.name, input.c_str());
+
+        cout << "Введите возраст: ";
+        cin >> patient.age;
+        cin.ignore();
+
+        cout << "Введите температуру: ";
+        cin >> patient.temperature;
+        cin.ignore();
+
+        strcpy(patient.diagnosis, "На диагностике");
+
+        // Отправка данных на сервер
+        send(clientSocket, (char*)&patient, sizeof(patient), 0);
+
+        // Получение диагноза от сервера
+        Patient diagnosedPatient;
+        recv(clientSocket, (char*)&diagnosedPatient, sizeof(diagnosedPatient), 0);
+        
+        printPatient(diagnosedPatient);
+    }
+
+    cout << "Сеанс завершен" << endl;
+    closesocket(clientSocket);
+    WSACleanup();
+    return 0;
+}

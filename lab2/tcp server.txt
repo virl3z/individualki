@@ -1,0 +1,97 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#pragma warning(disable: 4996)
+
+#include <iostream>
+#include <winsock2.h>
+#include <string>
+
+using namespace std;
+
+#pragma comment(lib, "ws2_32.lib")
+
+struct Patient {
+    int id;
+    char name[50];
+    int age;
+    char diagnosis[100];
+    double temperature;
+};
+
+void printPatient(const Patient& p) {
+    cout << "Пациент #" << p.id << endl;
+    cout << "Имя: " << p.name << endl;
+    cout << "Возраст: " << p.age << endl;
+    cout << "Диагноз: " << p.diagnosis << endl;
+    cout << "Температура: " << p.temperature << endl;
+    cout << "-----------------------------" << endl;
+}
+
+int main() {
+    WSADATA wsaData;
+    SOCKET serverSocket, clientSocket;
+    sockaddr_in serverAddr, clientAddr;
+    int clientAddrSize = sizeof(clientAddr);
+
+    // Инициализация Winsock
+    WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+    // Создание TCP-сокета
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+
+    // Настройка адреса сервера
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(8888);
+
+    // Привязка сокета
+    bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr));
+    listen(serverSocket, 5);
+
+    cout << "Медсервер запущен. Ожидание подключения пациентов..." << endl;
+
+    while (true) {
+        // Принятие подключения
+        clientSocket = accept(serverSocket, (sockaddr*)&clientAddr, &clientAddrSize);
+        cout << "Новый пациент подключен!" << endl;
+
+        bool clientConnected = true;
+        while (clientConnected) {
+            Patient receivedPatient;
+            // Получение данных о пациенте
+            int bytesReceived = recv(clientSocket, (char*)&receivedPatient, sizeof(receivedPatient), 0);
+            
+            if (bytesReceived <= 0) {
+                cout << "Пациент отключился" << endl;
+                break;
+            }
+
+            if (receivedPatient.id == -1) {
+                cout << "Пациент завершил сеанс" << endl;
+                clientConnected = false;
+                break;
+            }
+
+            cout << "Получены данные пациента:" << endl;
+            printPatient(receivedPatient);
+
+            // Медицинская обработка данных
+            if (receivedPatient.temperature > 37.5) {
+                strcpy(receivedPatient.diagnosis, "ГРИПП - требуется срочное лечение");
+            } else if (receivedPatient.temperature > 36.8) {
+                strcpy(receivedPatient.diagnosis, "Простуда - рекомендован покой");
+            } else {
+                strcpy(receivedPatient.diagnosis, "Здоров - профилактический осмотр");
+            }
+
+            // Отправка обработанных данных
+            send(clientSocket, (char*)&receivedPatient, sizeof(receivedPatient), 0);
+            cout << "Диагноз отправлен пациенту" << endl;
+        }
+
+        closesocket(clientSocket);
+    }
+
+    closesocket(serverSocket);
+    WSACleanup();
+    return 0;
+}

@@ -1,0 +1,74 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#pragma warning(disable: 4996)
+
+#include <iostream>
+#include <winsock2.h>
+#include <string>
+
+using namespace std;
+
+#pragma comment(lib, "ws2_32.lib")
+
+struct Student {
+    int id;
+    char name[50];
+    char faculty[50];
+    int course;
+    double averageGrade;
+};
+
+void printStudent(const Student& s) {
+    cout << "Студент #" << s.id << endl;
+    cout << "Имя: " << s.name << endl;
+    cout << "Факультет: " << s.faculty << endl;
+    cout << "Курс: " << s.course << endl;
+    cout << "Средний балл: " << s.averageGrade << endl;
+    cout << "-----------------------------" << endl;
+}
+
+int main() {
+    WSADATA wsaData;
+    SOCKET serverSocket;
+    sockaddr_in serverAddr, clientAddr;
+    int clientAddrSize = sizeof(clientAddr);
+
+    WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+    // Создание UDP-сокета
+    serverSocket = socket(AF_INET, SOCK_DGRAM, 0);
+
+    // Настройка адреса сервера
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(9999);
+
+    bind(serverSocket, (sockaddr*)&serverAddr, sizeof(serverAddr));
+    cout << "UDP Эхо-сервер деканата запущен..." << endl;
+
+    while (true) {
+        Student receivedStudent;
+        
+        // Получение данных от клиента
+        int bytesReceived = recvfrom(serverSocket, (char*)&receivedStudent, sizeof(receivedStudent), 0,
+                 (sockaddr*)&clientAddr, &clientAddrSize);
+
+        if (bytesReceived > 0) {
+            cout << "Получены данные студента:" << endl;
+            printStudent(receivedStudent);
+
+            // Эхо-ответ с отметкой о получении
+            char response[100];
+            sprintf(response, "Данные студента %s получены и обработаны", receivedStudent.name);
+            
+            // Отправка эхо-ответа
+            sendto(serverSocket, (char*)&receivedStudent, sizeof(receivedStudent), 0,
+                   (sockaddr*)&clientAddr, clientAddrSize);
+            
+            cout << "Эхо-ответ отправлен клиенту" << endl;
+        }
+    }
+
+    closesocket(serverSocket);
+    WSACleanup();
+    return 0;
+}
