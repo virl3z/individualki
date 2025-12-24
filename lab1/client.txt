@@ -21,7 +21,7 @@ int main() {
             cin >> marks[i];
 
         // Формируем путь к файлу клиента
-        string filePath = "C:/Users/s0177102/source/repos/file/" + surname + ".txt";
+        string filePath = "C:/Users/s0195784/source/repos/file/" + surname + ".txt";
 
         // Записываем оценки в файл
         ofstream fout(filePath);
@@ -56,3 +56,4 @@ int main() {
     return 0;
 
 }
+
