@@ -1,6 +1,6 @@
-import java.util.Scanner;
+// Файл: Number.java
+// Начинается интерфейс Number - должен быть в отдельном файле
 
-// Интерфейс Number
 interface Number {
     Number add(Number x);
     Number sub(Number x);
@@ -8,8 +8,9 @@ interface Number {
     Number div(Number x);
     void print();
 }
+// Файл: IntegerNumber.java
+// Начинается класс IntegerNumber - должен быть в отдельном файле
 
-// Класс IntegerNumber (целое число)
 class IntegerNumber implements Number {
     private int value;      // целочисленное значение
 
@@ -49,8 +50,9 @@ class IntegerNumber implements Number {
         System.out.println("Integer: " + value);
     }
 }
+// Файл: RealNumber.java
+// Начинается класс RealNumber - должен быть в отдельном файле
 
-// Класс RealNumber (вещественное число)
 class RealNumber implements Number {
     private double value;      // вещественное значение
 
@@ -90,8 +92,11 @@ class RealNumber implements Number {
         System.out.println("Real: " + value);
     }
 }
+// Файл: InterfaceNumber.java
+// Главный класс с методом main - должен быть в отдельном файле
 
-// Главный класс
+import java.util.Scanner;
+
 public class InterfaceNumber {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -130,7 +135,6 @@ public class InterfaceNumber {
         if (k >= 2) {
             System.out.println("\n--- Демонстрация арифметических операций ---");
             
-            // Проверяем типы чисел
             Number first = arr[0];
             Number second = arr[1];
             
