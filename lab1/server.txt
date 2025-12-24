@@ -30,7 +30,7 @@ int main() {
     setlocale(LC_ALL, "rus");
     cout << "Сервер запущен и ожидает запросы от клиентов..." << endl;
 
-    const string reqFile = "C:/Users/s0177102/source/repos/file/REQUEST.txt";
+    const string reqFile = "C:/Users/s0195784/source/repos/file/REQUEST.txt";
     string lastNameProcessed = "";
 
     while (true) {
@@ -47,7 +47,7 @@ int main() {
 
         lastNameProcessed = latest;
 
-        string studentFile = "C:/Users/s0177102/source/repos/file/" + latest + ".txt";
+        string studentFile = "C:/Users/s0195784/source/repos/file/" + latest + ".txt";
         ifstream finStudent(studentFile);
         if (!finStudent.is_open()) continue;
 
@@ -72,4 +72,5 @@ int main() {
     }
 
     return 0;
+
 }
